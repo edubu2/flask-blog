@@ -7,7 +7,7 @@ Route Decorators (@app.route('/'))
     - the '/' is 'root', or basically the website's homepage
 
 
-Running the Website from Local Machine
+Running the Website from Local Machine Using Environment Variables
   - terminal
   - cd project folder where the python script with the flask app is
   - % export FLASK_APP=<python_script_name.py>
@@ -24,3 +24,29 @@ Displaying changes in browser in real-time
     - % flask run
   - nice! now whenever we save changes to the python script, we can view them in the browser by refreshing the page
     - much better than having to restart the server for every change!
+
+Running our Website straight from Python file (instead of using env variables)
+  - this is better if we don't want to mess with command-line variables
+  - at the end of the python script, use the following lines of code:
+
+              if __name__ == '__main__':
+                  app.run(debug=True)
+
+Adding Routes
+  - to add a route, simply add another route decorator with the path to the new page
+  - ex: about page
+    - @app.route('/about')
+    - def about():
+    -   return "<h1>About Page</h1>"
+  - can add a @app.route('/home') route directly after the app.route('/') so that / and /home go to the same place
+
+Using templates for more complex HTML
+  - create templates directory
+  - instead of writing the HTML in the python script, we will import them (using Flask's templating module)
+  - this allows us to edit all of the HTML in one place without crowding our python script
+  - requires us to import render_template from flask
+    - so at this point, our import looks like:
+      - from flask import Flask, render_template
+  - then, in our return statements for our home and about routes:
+    - return render_template('home.html')
+      - automatically knows to look in the 'templates' dir (must be undercase)
