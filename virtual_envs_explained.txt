@@ -1,0 +1,27 @@
+Corey Schafer Tutorial: virtualenv and why you should use virtual environments
+https://www.youtube.com/watch?v=N5vscPTWKOk&ab_channel=CoreySchafer
+
+what is virtualenv?
+  - a way to separate different python environments for different projects
+  - why?
+    - if you have multiple projects that all rely on a single package (like Flask)
+      - may not want to upgrade flask, because it might break some of your websites!
+      - maybe you only want to upgrade it for certain projects that you know will not break due to upgrade
+
+creating virtual environments
+  - we will be using virtualenv (python module)
+    - virtualenv creates environments for python packages
+    - as compared to conda, which can handle environments for different languages as well
+  - terminal: pip install virtualenv
+  - create an Environments folder where all of your environments are
+    - for me this is in ewilens/doc/dev/Environments
+
+creating first virtual env
+  - terminal: cd Environments
+  - $ virtualenv project1_env
+    - this creates the new env 'project1_env'
+    - automatically installs pup, setuptools, wheel
+    - nothing else!
+  - $ source project1_env/bin/activate
+    - this activates our new environment
+    - when we use this command, we're now in project1_env
