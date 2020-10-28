@@ -5,7 +5,11 @@ app = Flask(__name__) # __name__ is just the name of the current module, helps f
 
 @app.route('/') # create home route. Browser will display whatever is returned from the following function
 def hello_world():
-    return '<h1>Home Page!</h1>'
+    return "<h1>Home Page!</h1>"
+
+@app.route('/about')
+def about():
+    return "<h1>About Page</h1>"
 
 if __name__ == '__main__':
     app.run(debug=True)
