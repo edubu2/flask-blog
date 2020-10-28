@@ -2,9 +2,17 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    {% if title %}
+    <title> Elliot's Flask Blog - {{ title }}</title>
+    {% else %}
+    <title> Elliot's Flask Blog </title>
+    {% endif %}
   </head>
   <body>
-    <h1>Home Page</h1>
+    {% for post in posts %}
+      <h1>{{ post.title }}</h1>
+      <p>By {{ post.author }} on {{ post.date_posted }}</p>
+      <p>{{ post.content }}</p>
+    {% endfor %}
   </body>
 </html>
