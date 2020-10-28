@@ -50,3 +50,11 @@ Using templates for more complex HTML
   - then, in our return statements for our home and about routes:
     - return render_template('home.html')
       - automatically knows to look in the 'templates' dir (must be undercase)
+
+Using Python variables in our html templates:
+  - we initialize this by creating a new argument in the 'return render_template...' line
+    - example: assume we have a 'posts' variable containing a list of blog post dictionaries
+        return render_template('home.html', posts=posts)
+      - we can now reference the name of the argument we created ('posts' in this case) in the html template file.
+      - even if the data was saved in variable called 'data', we would still use 'posts' in the html file
+        - the .py script would have the arg 'posts=data'
