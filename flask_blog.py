@@ -4,7 +4,8 @@ from flask import Flask # import Flask class
 app = Flask(__name__) # __name__ is just the name of the current module, helps flask find libraries/static files
 
 @app.route('/') # create home route. Browser will display whatever is returned from the following function
-def hello_world():
+@app.route('/home') # make it so / and /home go to the same place
+def home_page():
     return "<h1>Home Page!</h1>"
 
 @app.route('/about')
