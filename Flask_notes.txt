@@ -1,0 +1,26 @@
+Using Flask
+
+Route Decorators (@app.route('/'))
+  - these are what we type into our browsers use to go to different pages within a website
+  - app.route decorators handle all the back-end stuff
+    - allow us to write a function that returns the info that will be shown on our website for this specific route
+    - the '/' is 'root', or basically the website's homepage
+
+
+Running the Website from Local Machine
+  - terminal
+  - cd project folder where the python script with the flask app is
+  - % export FLASK_APP=<python_script_name.py>
+  - % flask run
+    - the 'flask run' command starts the local server
+    - open the returned ip from terminal in web browser to see the website
+      - contains whatever is returned from the function within the '/' route director
+
+Displaying changes in browser in real-time
+  - by default, when you make changes to the script, you need to restart the server in terminal for the browser to reflect the changes
+    - use control + c to shut down server then re-enter the 'flask run' command
+  - we can set Flask to 'debug mode', which will display any saved changes to our file when we refresh the browser.
+    - % export FLASK_DEBUG=1
+    - % flask run
+  - nice! now whenever we save changes to the python script, we can view them in the browser by refreshing the page
+    - much better than having to restart the server for every change!
