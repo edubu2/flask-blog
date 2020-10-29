@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    {% if title %}
+    <title> Elliot's Flask Blog - {{ title }}</title>
+    {% else %}
+    <title> Elliot's Flask Blog </title>
+    {% endif %}
+    <title></title>
+  </head>
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
