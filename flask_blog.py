@@ -1,6 +1,6 @@
 #!/Users/ewilens/anaconda3/bin/python3
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 app = Flask(__name__) # __name__ is just the name of the current module, helps flask find libraries/static files
 
 # for now let's pretend we made a db call to retrieve this list of posts
