@@ -59,10 +59,10 @@ Using Python variables in our html templates:
       - even if the data was saved in variable called 'data', we would still use 'posts' in the html file
         - the .py script would have the arg 'posts=data'
   - now open the home.html template (since that's where we want the posts to be displayed)
-    - the templating engine Flask uses is called ginga2
+    - the templating engine Flask uses is called jinja2
       - it allows us to write code here within our template
 
-HTML template coding with ginga2 (SYNTAX):
+HTML template coding with jinja2 (SYNTAX):
   - GENERAL SYNTAX
     - start code blocks using curly brackets and percent signs {% code_here_ %}
     - display variables using double curly brackets (no %): {{ variable.name }}
@@ -119,3 +119,102 @@ Template Inheritance (blocks)
 
 Static Folder (for .js and .css files)
   - to reference .css files in our templates, we must store them in a folder called '/static'
+
+YouTube tutorial part 3 (forms & user input) start
+
+Giving users ability to create accounts, login/logout, etc.
+
+Creating forms with WTFORMS
+  - not ideal to do this from scratch
+  - most popular way to implement forms with Flask is using the WTFORMS module
+    - pip install wtf
+
+Creating Forms
+  - NOTE: REQUIRES SECRET KEY FOR SECURITY WHEN USING FORMS (will cover later)
+  - put new 'forms.py' file in the project's root dir
+    - it could go directly into the main app, but it's better to split this up
+      - better for code reuse
+      - makes project simpler to understand & debug
+  - forms.py
+    - from flask_wtf import FlaskForm
+    - it's a little different than using HTML forms
+    - we use python classes to represent our forms, and they will then be converted into HTML forms from our template(s)
+
+Creating Registration Form
+  - in forms.py, first create class RegistrationForm that inherits from FlaskForm
+    - class RegistrationForm(FlaskForm)
+  - within this class is where we give our different fields. Each field has a field type (i.e. StringField, PasswordField)
+    - these must be imported @ top as such:
+      - from wtforms import StringField, PasswordField
+  - Validators
+    - passed as a list into the 'validators' arg. of fields
+    - need to import them as such:
+      - from wtforms.validators import DataRequired, Length, Email, EqualTo
+      - what these are:
+        - DataRequired: fields with this validator cannot be left empty
+        - Length: allows you to set min and/or max length for a certain field (i.e. usernames)
+        - Email: ensures valid email
+        - EqualTo: validates that the entry in the current field is equal to the value in the referenced field
+          - use this for confirm_password fields
+          - confirm_password = PasswordField('Confirm PW', validators=[DataRequired(), EqualTo('password')])
+            - when 'password' is the name of the original password variable
+      - NOTE: validators must have parenthesis in our code (not in import line)
+  - Submit button
+    - handled with SubmitField (add this to imports)
+    - simple: submit = SubmitField('Sign Up')
+      - replace 'sign up' with whatever you want the button to say
+
+Creating Login Form
+  - we will have our users sign in with their email address (not username)
+    - CS preference (and mine) - harder to forget your own email!
+  - fields: email/password/remember/submit
+    - we've used all of these in our previous form, except for remember
+  - Remember field - boolean yes/no for whether or not browser should remember this site
+
+Secret Keys
+  - NOTE: MUST USE SECRET KEY WHEN USING FORMS!!
+  - before we cover how to use forms in our app, we need to create one of these bad boys.
+  - these protect against modifying cookies and cross-site request forgery attacks, and more
+  - easy to create. Just go to the top of application file (flask_blog.py)
+    - right under app variable, we can set a secret key with:
+      - app.config['SECRET_KEY'] = '2c6f7da15b2e9db5e91dd289c8e75a9f'
+        - we got this token by opening python session in terminal and typing:
+          - import secrets
+          - secrets.token_hex(16) <-- 16=num_bytes
+            - this command returns a hex token like the one above
+  - you will want to make this an environment variable at some point. We'll do this later on in the series
+
+Using Forms in Application
+  - to use the forms, we need to import the classes from the 'forms' module we created into our application script (flask_blog.py)
+  - now we need to create a registration route and a login route
+    - this is done the same way as the other routes, using render_template
+    - but since we're using the form, we assign the form we just imported to the 'form' arg of render_template
+      - Note we haven't created register.html and login.html yet, but we're about to do that.
+
+Writing Forms into .HTML files
+  - each field has it's own div
+  - see commented notes in templates/register.html
+
+Getting a Route to Accept Post Requests
+  - use the 'methods' param of @app.route in the application (pass a list)
+    - @app.route("/register", methods=['GET', 'POST'])
+
+Message Flashing
+  - important part of user experience
+  - requires 'flash' import (from flask)
+  - we'll add an 'account created' alert after a user makes an account
+    - 'flash' method takes two params: message text (shown to user) and message category (not shown to user)
+  - add the top of content section in layout.html so that on alerts flash by default on any pages (assuming the other .html templates are inheriting from .html)
+    - the syntax is in layout.html and can be found in the Flask docs
+      - https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/
+  -
+
+Handling Redirects
+  - this is done in app.py (flask_blog.py in our case)
+  - requires the 'redirect' import (from flask)
+  - syntax:
+      return redirect(url_for('name_of_route_function_to_redirect_to'))
+        - ensure redirect location is in quotes
+  - we'll add a redirect for the register route to the home page
+    - it's confusing to user to fill out a registration form and have the page reload to the same empty form once finished
+    - better to redirect them to the /home page and send them an alert ('account created'), which we did in the previous step
