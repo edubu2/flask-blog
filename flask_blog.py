@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__) # __name__ is just the name of the current module, helps flask find libraries/static files
@@ -24,16 +24,19 @@ posts = [
 
 @app.route('/') # create home route. Browser will display whatever is returned from the following function
 @app.route('/home') # make it so / and /home go to the same place
-def home_page():
+def home():
     return render_template('home.html', posts=posts) # we can now access this variable in the template using arg name 'posts'
 
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit(): # if the form was valid when it was submitted:
+        flash('Account created for {}!'.format(form.username.data), 'success')
+        return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/login')
