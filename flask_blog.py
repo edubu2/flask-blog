@@ -1,7 +1,10 @@
 #!/Users/ewilens/anaconda3/bin/python3
 
 from flask import Flask, render_template, url_f
+from forms import RegistrationForm, LoginForm
+
 app = Flask(__name__) # __name__ is just the name of the current module, helps flask find libraries/static files
+
 
 app.config['SECRET_KEY'] = '2c6f7da15b2e9db5e91dd289c8e75a9f' # generated in terminal using secrets module
 
@@ -29,6 +32,16 @@ def home_page():
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
+
+@app.route('/register')
+def register():
+    form = RegistrationForm()
+    return render_template('register.html', title='Register', form=form)
+
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template('login.html', title='Login', form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
