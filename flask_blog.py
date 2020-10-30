@@ -1,6 +1,4 @@
-#!/Users/ewilens/anaconda3/bin/python3
-
-from flask import Flask, render_template, url_f
+from flask import Flask, render_template, url_for
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__) # __name__ is just the name of the current module, helps flask find libraries/static files
