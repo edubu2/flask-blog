@@ -52,9 +52,70 @@ Using templates for more complex HTML
       - automatically knows to look in the 'templates' dir (must be undercase)
 
 Using Python variables in our html templates:
-  - we initialize this by creating a new argument in the 'return render_template...' line
+  - we do this by creating a new argument in the 'return render_template...' line
     - example: assume we have a 'posts' variable containing a list of blog post dictionaries
         return render_template('home.html', posts=posts)
       - we can now reference the name of the argument we created ('posts' in this case) in the html template file.
       - even if the data was saved in variable called 'data', we would still use 'posts' in the html file
         - the .py script would have the arg 'posts=data'
+  - now open the home.html template (since that's where we want the posts to be displayed)
+    - the templating engine Flask uses is called ginga2
+      - it allows us to write code here within our template
+
+HTML template coding with ginga2 (SYNTAX):
+  - GENERAL SYNTAX
+    - start code blocks using curly brackets and percent signs {% code_here_ %}
+    - display variables using double curly brackets (no %): {{ variable.name }}
+    - works with list of dicts (at this point each blog post is saved as a dictionary, all of the dictionaries are in a list)
+  - LOOPS
+    - here's how we display all posts on the home page:
+          <body>
+            {% for post in posts %}
+              <h1>{{ post.title }}</h1>
+              <p>By {{ post.author }} on {{ post.date_posted }}</p>
+              <p>{{ post.content }}</p>
+            {% endfor %}
+          </body>
+  - IF/ELSE
+    - {% if title %}    <-- starts conditional, true if title is given as a parameter in the python script, false otherwise
+    - {{ title }}       <-- will display the value assigned to the 'title' param in py script
+    - {% else %}
+    - default_title_if_none_given
+    - {% endif %}
+
+Template Inheritance (blocks)
+  - avoids repetition in code
+  - requires a separate file to keep all the repeated code, so you can update it all in one place
+    - in this project the file is templates/layout.html
+  - right now, our home.html and about.html templates contain mostly the same code
+    - this will become a pain if we want to change something
+  - templates should only show what is unique for that page
+    - if I open about.html, I don't want to see the header and title that's present on every other page
+  - so, let's create a layout.html file
+    - this file will contain everything that is present in all files
+    - we will create BLOCKS in the template file in places that can be overridden by the other templates
+      - for example, the <body> section is where about.html differs from home.html
+      - so within <body> we create a block called 'content' that can be overridden by the other web pages to make them unique
+  - looks like this:
+
+      <body>
+        {% block content %} {% endblock content %}
+      </body>
+
+  - now, we can replace this block in the home.html and about.html files with the relevant content
+    - in the home page (where we are displaying blog posts), we put the for loop inside the block
+    - first, call {% extends "layout.html" %} as the first line in home.html
+      - we're now following the layout in layout.html
+    - now time to replace block content in layout.html with blog posts. Here's the syntax:
+
+        {% extends "layout.html" %}
+        {% block content %}
+            {% for post in posts %}
+              <h1>{{ post.title }}</h1>
+              <p>By {{ post.author }} on {{ post.date_posted }}</p>
+              <p>{{ post.content }}</p>
+            {% endfor %}
+        {% endblock content %}
+
+Static Folder (for .js and .css files)
+  - to reference .css files in our templates, we must store them in a folder called '/static'
