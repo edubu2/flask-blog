@@ -44,11 +44,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # fake data to simulate successful login
-        if form.email.date == 'admin@blog.com' and form.password.data == 'password':
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
             flash("You're logged in!", 'success')
             return redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please check username & password', 'danger')
+            flash('Login Unsuccessful. Please Check Username & Password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
 if __name__ == '__main__':
