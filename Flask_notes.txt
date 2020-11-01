@@ -218,3 +218,32 @@ Handling Redirects
   - we'll add a redirect for the register route to the home page
     - it's confusing to user to fill out a registration form and have the page reload to the same empty form once finished
     - better to redirect them to the /home page and send them an alert ('account created'), which we did in the previous step
+
+Handling Form Errors w/ bootstrap
+  - need to edit register.html
+  - use an if statement basically saying if there are errors, display them.
+  - doing this with bootstrap plugin would be much easier but CS prefers to teach this way so we can make all customization decisions ourselves
+  - code doesn't seem very intuitive to me but it works - see register.html
+
+Creating Login page (login.html)
+  - copy layout.html content to login.html and modify as follows:
+    1. change legend to 'Log In' (from 'Register')
+    2. remove the username div/form group (since we're using email, not username, to login)
+    3. remove confirm_password div
+    4. Change 'Already have an account?' to: 'Don't have an account?'
+  - then create a 'Remember Me?' checkbox
+    - we'll use bootstrap class "form-check" since it's a checkbox
+    - then add the form.remember & label with the 'form-check-input' class
+  - create a password reset link
+    - with dummy link - can use # in place of actual link
+
+Bootstrap Alert Categories
+  - when we flash a message, we can assign it a category (second parameter)
+  - the category assigned will determine the way the alert is displayed
+    - 'success' - green (ex: 'account created successfully')
+    - 'danger' - red (ex: 'invalid password')
+
+Handling Navigation Bar Links (Navbar) w/ url_for
+  - the way it's set up right now, our website would break if we changed the name of any of our routes.
+    - they are direct links to our routes w/ href
+    - instead of '/home' to get to home route, we will use {{ url_for('home') }}
