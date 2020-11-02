@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_blog import app, db, bcrypt # these come from __init__.py
 from flask_blog.forms import RegistrationForm, LoginForm
 from flask_blog.models import User, Post
-from flask_login import login_user
+from flask_login import login_user, current_user, logout_user
 
 # for now let's pretend we made a db call to retrieve this list of posts
 posts = [
@@ -31,6 +31,8 @@ def about():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit(): # if the form was valid when it was submitted:
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -43,6 +45,8 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -53,3 +57,8 @@ def login():
         else:
             flash('Login unsuccessful. Please check email & password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
