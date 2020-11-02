@@ -2,6 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_blog import app, db, bcrypt # these come from __init__.py
 from flask_blog.forms import RegistrationForm, LoginForm
 from flask_blog.models import User, Post
+from flask_login import login_user
 
 # for now let's pretend we made a db call to retrieve this list of posts
 posts = [
@@ -44,10 +45,11 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        # fake data to simulate successful login
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash("You're logged in!", 'success')
+        user = User.query.filter_by(email=form.email.data).first()
+        # Check if user exists & the password is valid. If so, login. Otherwise, flash error.
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please Check Username & Password', 'danger')
+            flash('Login unsuccessful. Please check email & password', 'danger')
     return render_template('login.html', title='Login', form=form)
