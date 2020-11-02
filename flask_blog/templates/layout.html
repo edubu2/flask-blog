@@ -34,6 +34,7 @@
             <div class="navbar-nav">
               <!-- Display 'login' & 'register' if no one logged in, 'logout' otherwise -->
               {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
               {% else %}
                 <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
