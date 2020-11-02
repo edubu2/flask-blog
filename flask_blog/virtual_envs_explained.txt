@@ -25,3 +25,6 @@ creating first virtual env
   - $ source project1_env/bin/activate
     - this activates our new environment
     - when we use this command, we're now in project1_env
+  - leaving virtualenv
+    - $ deactivate
+      - that's it!

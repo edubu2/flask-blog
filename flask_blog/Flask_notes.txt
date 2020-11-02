@@ -247,3 +247,129 @@ Handling Navigation Bar Links (Navbar) w/ url_for
   - the way it's set up right now, our website would break if we changed the name of any of our routes.
     - they are direct links to our routes w/ href
     - instead of '/home' to get to home route, we will use {{ url_for('home') }}
+
+Connecting website with SQLAlchemy DB
+  - pip install flask-sqlalchemy
+  - flask_blog.py - import SQLAlchemy (from sqlalchemy)
+  - we'll use SQLite db (easy to get started with)
+    - db will be saved as file in filesystem
+
+Setting Up SQLite DB
+  - in flask_blog.py
+  - to set location of db:
+    - set as config
+    - app.config['SQLALCHEMY'_DATABASE_URI]
+      - with SQLite we can specify a relative path with three forward slashes & the URI ('sqlite:///site.db')
+        - three slashes are a relative path from current file, so it should get created here in our project dir alongside the flask_blog.py module we're already in.
+
+Create DB Instance
+  - db = SQLAlchemy(app)
+    - this codeblock gives us an SQLAlchemy DB instance & are ready to work with our db
+  - with SQLAlchemy, we can represent our db structure as classes
+  - NOTE: ideally we would do this in a separate file. We'll start with it in our main app for now.
+    - this is because the dependencies can get messed up when split into separate files
+    - we will handle this in the next video
+
+SQLAlchemy Classes:
+  - each class represents a table in the DB
+  - let's create the 'User' class to handle our app's users
+
+Creating SQLAlchemy Classes:
+  - class <table_name>(db.Model):
+    - table_name must have first letter capitalized (like all classes)
+    - inherits from the db.Model class that we imported
+  - attributes will be the columns
+
+Creating Columns in SQLAlchemy db:
+  - as attributes of the <table_name> class:
+  - <col_name> = db.Column(db.<DataType([limit], <other preferences>)
+    - other preferences can be:
+      - nullable=False
+      - primary_key=True
+      - default=<value_to_use_if_empty>
+      - db.ForeignKey("<table_name>.<col_name>")
+        - note the foreign table name here will be undercase
+        - only use uppercase when referencing the python class
+
+Creating Relationships to other tables w/ SQLAlchemy
+  - this will not display as a column! Helps w/ queries.
+  - <ref_name> = db.relationship('<other_table_name>', backref='<see_notes>', lazy=True)
+    - backref: the name that we want to reference this field as in database calls
+      - will see this in action later
+    - lazy=True: defines WHEN the data is loaded
+      - loads data as necessary in one go
+      - convenient here because we'll be able to get all posts, in this case, for an individual user.
+
+Saving Times to an App DB
+  - import datetime from datetime
+  - to save the time of posts on our site, we'll set up the db field with default=datetime.utcnow parameter
+    - ensure no parenthesis after utcnow, otherwise it will be overwritten!
+  - always use utctime when saving times to db for consistency
+
+Creating DB in file system
+  - we can do this once we have set up our classes
+  - use terminal
+    - from project dir, start python3
+      - from flask_blog import db
+      - db.create_all()
+  - that's it! If set up correctly, we'll be able to see the db in our project dir now.
+
+Adding records to SQLAlchemy DB (command line)
+  - python3 from command line (in project dir)
+    - from flask_blog import db
+    - from flask_blog import User, Post  <-- import db classes
+    - user_1 = User(username='<un>', email='<em_ad>', password='pw')
+      - only need to add fields where nullable=False & no default value set
+    - db.session.add(user_1)
+      - this does not actually change the db until we commit the change
+      - we can add many users at this point and then commit all at once
+    - db.session.commit()
+
+Querying records from SQLAlchemy DB (command line)
+  - python3, command line (in project dir)
+    - from flask_blog import User, Post
+      - User.query.all()
+        - shows all records from User table
+      - User.query.first()
+        - returns first record in User table
+  - filtering results
+    - filter by usernames:
+      - User.query.filter_by(username="Corey").all()
+        - returns any users with UN=Corey
+
+Saving Query Results as Variables & Using those variables
+  - we just added a couple of posts in the Post table
+  - let's grab the first post from the DB and save it to a variable
+  - post = Post.query.first()
+    - post.title
+      - returns the title of the first post
+    - post.user_id
+      - returns the user_id integer
+        - this might not be what we want. What if we want to see the full record in Users for the author of this post?
+    - post.author
+      - that did it!
+      - it worked since we set up the backref under the 'posts' attribute of User class/table
+    - can iterate through posts and print the author of each one
+      - p = Post.query.all()
+      - for post in p:
+        - print(post.author)
+
+Dropping Data from SQLAlchemy DB
+  - same way as we create the db!
+  - db.drop_all()
+
+NEW SECTION - RESTRUCTURING APP AS PACKAGE (instead of module)
+
+Restructuring App as Package
+  - this is kind of a pain and is usually better to start a project as a package
+  - we need to do this here in order to save our db models in another module (without running into circular import)
+  - to restructure as a package:
+    1. create new folder in root with the exact same name as the app's python file
+      - in this case our folder will be called flask_blog
+    2. save an __init__.py file in the new folder
+      - this file contains all of the imports
+    3. move everything from the root folder into this new folder EXCEPT the application itself
+    4. break up the flask_blog.py file into different modules inside the project folder (flask_blog/flask_blog/)
+      - the only thing left in the app file should be if __name__==...
+        - so, we will RENAME THIS FILE TO run.py
+      - /routes: copy all route data there
