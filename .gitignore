@@ -1,1 +1,2 @@
-DS_Store
+.DS_Store
+flask_blog/__pycache__/
