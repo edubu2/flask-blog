@@ -380,4 +380,74 @@ Restructuring App as Package
 
 Hashing Passwords
   - first step of user authentication: hashing our passwords for security
-  - 
+  - see notes/password_hashing.txt for details
+
+BCrypt setup
+  - we will setup Bcrypt in __init__.py
+  - must import Bcrypt (from flask_bcrypt)
+  - Bcrypt(app) <-- initializes bcrypt for our app
+
+Adding Registered Users to DB
+  - go to /routes --> register route
+  - under the "if form.validate_on_submit():" is where we will add it to db
+    - since we only want to submit valid info to db
+  - same process as what we did in terminal w/ BCrypt (see notes/password_hashing.txt)
+  - great, we tested that out by registering an account with username = 'wilensel', then querying the DB for that username in terminal. It worked!
+
+Updating Form Validation to make sure username isn't already taken
+  - for this, we'll go to our 'RegistrationForm' class in forms.py
+  - we'll create new functions within this class called 'validate_<field>(self, <field>)'
+      - for example, the username field:
+        def validate_username(self, username):
+          if user:
+            raise ValidationError("Username already exists. Please try another.")
+
+Creating Login System with flask_login
+  - pip install flask_login
+  - now we need to import into our __init__.py file
+    - from flask_login import LoginManager
+  - then create an instance of this class
+    - login_manager = LoginManager(app)
+  - now we're ready to use our login manager in our application
+    - to do this, we add some functionality to our DB models
+    - it will then handle all of these sessions in the background for us!
+  - so, open models.py
+    - import login_manager from flask_blog
+    - now we need to create a function w/ a decorator called 'user_loader'
+      - can find this on the extension's documentation, no need to memorize.
+
+User_loader decorators to manage login sessions
+  - must create the user_loader decorator so that the extension knows how to find one of our users by ID
+  - we want the function (load_user(user_id)) to grab the user by user_id
+  - so, it should return User.query.get(int(user_id)) <-- this will return the user object for the user with that ID
+
+OK, the extension is almost setup. Last thing - it expects our user model to have certain attributes and methods. Four to be exact:
+  1. is_authenticated - returns true if valid credentials
+  2. is_active
+  3. is_anonymous
+  4. get_id
+
+  - we could add all of these ourselves, but the extension provides us with a simple class that we can inherit from that will automatically add all of these required methods for us
+    - from flask_login import UserMixin
+    - then, also have the 'class User' inherit from the 'UserMixin'
+      - User class should inherit from both db.Model and UserMixin.
+        - class User(db.Model, UserMixin)
+
+Now Update the Login Route to Handle Sessions
+  - check that username and password match up, then use the login_user function we imported (from flask_login) to log in the user.
+  - also want to redirect user to home once login complete
+
+Handle logouts
+  - need to create /logout route
+  - this is very simple, the logout_user() function from flask_login handles this for us
+
+Displaying 'logout' instead of 'login' on the navbar when a user is logged in:
+  - requires jinja2 conditional where we have the 'login' part in the layout.html template (see templates/layout.html navbar section for code)
+
+Restricting routes to logged-in users only
+  - ex: clicking 'edit profile' link on Twitter when you're not logged in will throw an error like 'Please login in order to edit your profile'
+  - add login_required import (from flask_login)
+  - add @login_required decorator right under the @app.route('/account') line in routes.py
+  - then, add another line to __init__.py:
+    login_manager.lign_view = 'login'
+      - what you set this equal to is the name of the function (the same thing we would put in the url_for function)
