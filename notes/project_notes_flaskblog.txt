@@ -370,6 +370,14 @@ Restructuring App as Package
       - this file contains all of the imports
     3. move everything from the root folder into this new folder EXCEPT the application itself
     4. break up the flask_blog.py file into different modules inside the project folder (flask_blog/flask_blog/)
-      - the only thing left in the app file should be if __name__==...
-        - so, we will RENAME THIS FILE TO run.py
-      - /routes: copy all route data there
+      - the only thing left in the app file should be:
+          if __name__ == '__main__':
+            app.run(debug=True)
+        - but since we're calling the run() function, we need to import app (from flask_blog)
+          - for this to work, there must be an 'app' variable inside the __init__.py file (which there is)
+      - /routes.py: copy all route data there
+        - we should do our route imports in this file (not init)
+
+Hashing Passwords
+  - first step of user authentication: hashing our passwords for security
+  - 
