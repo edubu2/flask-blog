@@ -8,8 +8,8 @@
         <p class="text-secondary">{{ current_user.email }}</p>
       </div>
     </div>
-        <!-- open a form tag with post, so that it posts the info to the same form we're currently on  -->
-        <form method="POST" action="">
+        <!-- open a form tag with post, so that it posts the info to the same form we're currently on (don't forget encoding type!!!) -->
+        <form method="POST" action="" enctype="multipart/form-data">
           <!-- enter form fields: hidden tag, then  -->
           {{ form.hidden_tag() }} <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
           <!-- We will add some html/css classes here from bootstrap for asthetics -->
@@ -44,6 +44,14 @@
                 {{ form.email(class="form-control form-control-lg") }}
               {% endif %}
             </div>
+            <div class="form-group">
+              {{ form.picture.label() }}
+              {{ form.picture(class="form-control-file") }}
+              {% if form.picture.errors %}
+                {% for error in form.picture.errors %}
+                  <span class="text-danger"> {{ error }} </span></br>
+                {% endfor %}
+              {% endif %}
           </fieldset>
           <!-- Now we design our submit button field -->
           <div class="form-group">
