@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from flask_blog.models import User
@@ -16,12 +17,13 @@ class RegistrationForm(FlaskForm):
                             validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
-    # Custom validations:
     def validate_username(self, username):
+        """Ensures username doesn't already exist in DB"""
         user = User.query.filter_by(username=username.data).first()
         if user:        # True if user is NOT empty, False otherwise
             raise ValidationError('Username is already taken. Please choose a different one.')
     def validate_email(self, email):
+        """Ensures email address doesn't already exist in DB"""
         user = User.query.filter_by(email=email.data).first()
         if user:        # True if user is NOT empty, False otherwise
             raise ValidationError('Email address is already taken. Please choose a different email address.')
@@ -33,3 +35,26 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class UpdateAccountForm(FlaskForm):
+    # username field (requires wtforms StringField, and length validator imports)
+    username = StringField('Username',
+                            validators=[DataRequired(), Length(min=2, max=20)])
+    # email field (requires wtforms StringField, and email validator imports)
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField('Update')
+
+    # Custom validations:
+    def validate_username(self, username):
+        """First checks that the user changed their username. If so, make sure the new username isn't already taken."""
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:        # True if user is NOT empty, False otherwise
+                raise ValidationError('Username is already taken. Please choose a different one.')
+    def validate_email(self, email):
+        """First checks that the user changed their email address. If so, make sure the new email address isn't already taken."""
+        if email.data != email.username:
+            user = User.query.filter_by(email=email.data).first()
+            if user:        # True if user is NOT empty, False otherwise
+                raise ValidationError('Email address is already taken. Please choose a different email address.')

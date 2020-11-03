@@ -1,4 +1,54 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>{{ current_user.username }}</h1>
+  <div class="content-section">
+    <div class="media">
+      <img class="rounded-circle account-img" src={{ image_file }}>
+      <div class="media-body">
+        <h2 class="account-heading">{{ current_user.username }}</h2>
+        <p class="text-secondary">{{ current_user.email }}</p>
+      </div>
+    </div>
+        <!-- open a form tag with post, so that it posts the info to the same form we're currently on  -->
+        <form method="POST" action="">
+          <!-- enter form fields: hidden tag, then  -->
+          {{ form.hidden_tag() }} <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
+          <!-- We will add some html/css classes here from bootstrap for asthetics -->
+          <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Account Info</legend>
+            <!-- Now we start adding our fields -->
+            <div class="form-group">
+              {{ form.username.label(class="form-control-label") }}
+              <!-- Check for errors! This part is what highlights to the user what was wrong with their input. Use for all fields w/ validation. -->
+              {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.username.errors %}
+                    <span> {{ error }} </span>
+                  {% endfor %}
+                </div>
+              <!-- What to do if there are no errors -->
+              {% else %}
+                {{ form.username(class="form-control form-control-lg") }}
+              {% endif %}
+            </div>
+            <div class="form-group">
+              {{ form.email.label(class="form-control-label") }}
+              {% if form.email.errors %}
+                {{ form.email(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                  {% for error in form.email.errors %}
+                    <span> {{ error }} </span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ form.email(class="form-control form-control-lg") }}
+              {% endif %}
+            </div>
+          </fieldset>
+          <!-- Now we design our submit button field -->
+          <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+          </div>
+        </form>
+  </div>
 {% endblock content %}
