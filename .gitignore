@@ -1,2 +1,3 @@
 .DS_Store
 flask_blog/__pycache__/
+flask_blog/static/profile_pics
