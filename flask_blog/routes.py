@@ -64,10 +64,21 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@app.route('/account')
+@app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccountForm()
+    # Run validations for the form and if the new username/email is valid, update the DB with the new user info.
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.username.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+    # if this is a GET request (meaning browser is just pulling the form, not submitting), auto-populate the fields with the user's existing info
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file) # DB call
     # Also return image_file so we can reference that in our template
     return render_template('account.html', title='Account', image_file=image_file, form=form)

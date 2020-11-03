@@ -5,13 +5,10 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from flask_blog.models import User
 
 class RegistrationForm(FlaskForm):
-    # username field (requires wtforms StringField, and length validator imports)
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
-    # email field (requires wtforms StringField, and email validator imports)
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    # password field & confirm password fields (requires PasswordField, EqualTo validator imports to confirm passwords match)
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password',
                             validators=[DataRequired(), EqualTo('password')])
@@ -20,14 +17,13 @@ class RegistrationForm(FlaskForm):
     def validate_username(self, username):
         """Ensures username doesn't already exist in DB"""
         user = User.query.filter_by(username=username.data).first()
-        if user:        # True if user is NOT empty, False otherwise
+        if user:
             raise ValidationError('Username is already taken. Please choose a different one.')
     def validate_email(self, email):
         """Ensures email address doesn't already exist in DB"""
         user = User.query.filter_by(email=email.data).first()
-        if user:        # True if user is NOT empty, False otherwise
+        if user:
             raise ValidationError('Email address is already taken. Please choose a different email address.')
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email',
@@ -37,10 +33,8 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class UpdateAccountForm(FlaskForm):
-    # username field (requires wtforms StringField, and length validator imports)
     username = StringField('Username',
                             validators=[DataRequired(), Length(min=2, max=20)])
-    # email field (requires wtforms StringField, and email validator imports)
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     submit = SubmitField('Update')
@@ -54,7 +48,7 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('Username is already taken. Please choose a different one.')
     def validate_email(self, email):
         """First checks that the user changed their email address. If so, make sure the new email address isn't already taken."""
-        if email.data != email.username:
+        if email.data != current_user.email:
             user = User.query.filter_by(email=email.data).first()
             if user:        # True if user is NOT empty, False otherwise
                 raise ValidationError('Email address is already taken. Please choose a different email address.')
