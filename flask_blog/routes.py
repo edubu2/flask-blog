@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
 from flask_blog import app, db, bcrypt # these come from __init__.py
-from flask_blog.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from flask_blog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flask_blog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -34,6 +34,7 @@ def about():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """This route is where users register for an account."""
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
@@ -48,6 +49,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """This route is where users login"""
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
@@ -81,10 +83,10 @@ def save_picture(form_picture):
     resized_image.save(picture_path)
     return picture_fn
 
-
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
+    """This route is where users can update their username, email address, and profile picture."""
     form = UpdateAccountForm()
     # Run validations for the form and if the new username/email is valid, update the DB with the new user info.
     if form.validate_on_submit():
@@ -103,3 +105,13 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file) # DB call
     # Also return image_file so we can reference that in our template
     return render_template('account.html', title='Account', image_file=image_file, form=form)
+
+@app.route('/post/new', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    """This route is where users will add new posts to the blog."""
+    form = PostForm()
+    if form.validate_on_submit():
+        flash("Your post has been created!", 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post', form=form)
