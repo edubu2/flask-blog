@@ -1,7 +1,7 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from flask_blog import app, db, bcrypt # these come from __init__.py
 from flask_blog.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from flask_blog.models import User, Post
@@ -80,7 +80,7 @@ def account():
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
         current_user.username = form.username.data
-        current_user.email = form.username.data
+        current_user.email = form.email.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
@@ -104,10 +104,33 @@ def new_post():
         db.session.commit()
         flash("Your post has been created!", 'success')
         return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post', form=form)
+    return render_template('create_post.html', title='New Post', form=form, legend_name='New Post')
 
-@app.route('/post/<post_id>')
+@app.route('/post/<int:post_id>')
 def post(post_id):
     # grab the post from the db. If it doesn't exist, return 404 error ('page doesn't exist')
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
+
+@app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    """This route is where users can modify their existing posts """
+    # grab the post from the db. If it doesn't exist, return 404 error ('page doesn't exist')
+    post = Post.query.get_or_404(post_id)
+    # Ensure the editor is actually the author of the post
+    if post.author != current_user:
+        abort(403) # 403 is HTTP response for a forbidden route.
+    form = PostForm()
+    # If it's a POST request (meaning user submitted the form), update DB if the changes are valid.
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    # Otherwise (GET request), pre-populate form with existing post data
+    elif request.method == 'GET':
+        form.title.data = post.title
+        form.content.data = post.content
+    return render_template('create_post.html', title='Update Post', form=form, legend_name='Update Post')
