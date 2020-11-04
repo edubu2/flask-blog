@@ -41,19 +41,19 @@
             {{ form.remember(class="form-check-input")}}
             {{ form.remember.label(class="form-check-label")}}
           </div>
-          <small class="text-muted ml-2">
-            <a href="#">Forgot Password?</a>
         </fieldset>
-        <!-- Now we design our submit button field -->
         <div class="form-group">
           {{ form.submit(class="btn btn-outline-info") }}
         </div>
+        <small class="text-muted ml-2">
+          <a href="#">Forgot Password?</a>
+        </small>
       </form>
   </div>
   <div class="border-top pt-3">
     <small class="text-muted">
-      <!-- If you don't have an account, link to register page -->
-      <!-- NOTE that what we pass into url_for here is the name of the FUNCTION (not route) -->
       Don't have an account? <a class="ml-2" href="{{ url_for('register') }}">Register</a>
+    </small>
+  </div>
 
 {% endblock content %}
