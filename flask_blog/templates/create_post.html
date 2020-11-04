@@ -7,7 +7,7 @@
         {{ form.hidden_tag() }} <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
         <!-- We will add some html/css classes here from bootstrap for asthetics -->
         <fieldset class="form-group">
-          <legend class="border-bottom mb-4">New Post</legend>
+          <legend class="border-bottom mb-4">{{ legend_name }}</legend>
           <!-- Now we start adding our fields -->
             <!-- What to do if there are no errors -->
           <div class="form-group">
