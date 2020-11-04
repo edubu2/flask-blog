@@ -12,7 +12,7 @@ bcrypt = Bcrypt(app)
 # Set up login manager to enforce login required for some routes
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # tells login manager where to login
-login_manager.login_message_category = 'login'
+login_manager.login_message_category = 'info'
 
 # import routes after creating the app variable to avoid circular import
 from flask_blog import routes
