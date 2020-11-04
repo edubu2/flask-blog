@@ -7,25 +7,11 @@ from flask_blog.forms import RegistrationForm, LoginForm, UpdateAccountForm, Pos
 from flask_blog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-# for now let's pretend we made a db call to retrieve this list of posts
-posts = [
-    {
-        'author': 'Elliot Wilens',
-        'title': 'Learning Flask part 1',
-        'content': 'First post content',
-        'date_posted': 'October 27, 2020'
-    },
-    {
-        'author': 'Megan Harpell',
-        'title': "I love Elliot's new site!",
-        'content': "Elliot's site is dope. Super fly, even.",
-        'date_posted': 'October 28, 2020'
-    }
-]
-
 @app.route('/') # create home route. Browser will display whatever is returned from the following function
 @app.route('/home') # make it so / and /home go to the same place
 def home():
+    """This route is the home/default landing page for website and can be accessed with '/' or '/home' """
+    posts = Post.query.all()
     return render_template('home.html', posts=posts) # we can now access this variable in the template using arg name 'posts'
 
 @app.route('/about')
@@ -112,6 +98,10 @@ def new_post():
     """This route is where users will add new posts to the blog."""
     form = PostForm()
     if form.validate_on_submit():
+        # create instance of Post class w/ this post's content. I could have expressed the 'user_id=current_user' attribute as 'author=current_user' instead, since it's backref to class User.
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
         flash("Your post has been created!", 'success')
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form)
