@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-    <!-- Display posts -->
+    <!-- Display posts for specific user -->
+    <h1 class="mb-3">Posts by {{ user.username }} ({{ posts.total }})</h1>
     {% for post in posts.items %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
@@ -20,9 +21,9 @@
       {% if page_num %}
         <!-- Different button style (filled-in) for the page that we're currently on -->
         {% if posts.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('user_posts', username=user.username, page=page_num) }}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...

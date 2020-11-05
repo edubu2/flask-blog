@@ -148,3 +148,13 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted', 'success')
     return redirect(url_for('home'))
+
+@app.route('/user/<string:username>')
+def user_posts(username):
+    """This route shows all posts for a given user. """
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404() # if the username isn't associated with any posts, return 404 error
+    posts = Post.query.filter_by(author=user)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('user_posts.html', posts=posts, user=user) # we can now access this variable in the template using arg name 'posts'
