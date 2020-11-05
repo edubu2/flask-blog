@@ -12,7 +12,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 def home():
     """This route is the home/default landing page for website and can be accessed with '/' or '/home' """
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.paginate(page=page, per_page=5)
+    # Show 5 posts per page, ordered by date posted
+    posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts) # we can now access this variable in the template using arg name 'posts'
 
 @app.route('/about')
