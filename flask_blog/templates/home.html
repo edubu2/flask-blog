@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
     <!-- Display posts -->
-    {% for post in posts %}
+    {% for post in posts.items %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
           <div class="media-body">
@@ -13,5 +13,19 @@
             <p class="article-content">{{ post.content }}</p>
           </div>
         </article>
+    {% endfor %}
+    <!-- Add page navigator where users can select which page they'd like to see (limiting number of buttons displayed) -->
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      <!-- If there is content on the page, display a button to go to that page-->
+      {% if page_num %}
+        <!-- Different button style (filled-in) for the page that we're currently on -->
+        {% if posts.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
     {% endfor %}
 {% endblock content %}
