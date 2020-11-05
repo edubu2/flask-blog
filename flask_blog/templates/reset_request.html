@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="content-section">
+      <!-- open a form tag with post, so that it posts the info to the same form we're currently on  -->
+      <form method="POST" action="">
+        <!-- enter form fields: hidden tag, then  -->
+        {{ form.hidden_tag() }} <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
+        <!-- We will add some html/css classes here from bootstrap for asthetics -->
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Reset Password</legend>
+          <div class="form-group">
+            {{ form.email.label(class="form-control-label") }}
+            {% if form.email.errors %}
+              {{ form.email(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                  <span> {{ error }} </span>
+                {% endfor %}
+              </div>
+            {% else %}
+              {{ form.email(class="form-control form-control-lg") }}
+            {% endif %}
+          </div>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+      </form>
+  </div>
+{% endblock content %}

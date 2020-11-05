@@ -1,7 +1,9 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '2c6f7da15b2e9db5e91dd289c8e75a9f'
@@ -13,6 +15,21 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login' # tells login manager where to login
 login_manager.login_message_category = 'info'
+
+# Configure email
+app.config['MAIL_SERVER'] = 'smtp.mail.yahoo.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+
+# Email debug (remove these lines when fixed)
+app.config['MAIL_DEBUG'] = True
+app.config['MAIL_SUPPRESS_SEND'] = False
+app.config['TESTING'] = False
+
+# Keep this
+mail = Mail(app)
 
 # import routes after creating the app variable to avoid circular import
 from flask_blog import routes
