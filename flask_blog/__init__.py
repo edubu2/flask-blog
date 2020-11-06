@@ -13,7 +13,7 @@ bcrypt = Bcrypt(app)
 
 # Set up login manager to enforce login required for some routes
 login_manager = LoginManager(app)
-login_manager.login_view = 'login' # tells login manager where to login
+login_manager.login_view = 'users.login' # tells login manager where to login
 login_manager.login_message_category = 'info'
 
 # Configure email
@@ -31,5 +31,11 @@ app.config['TESTING'] = False
 # Keep this
 mail = Mail(app)
 
-# import routes after creating the app variable to avoid circular import
-from flask_blog import routes
+# import & register blueprints
+from flask_blog.users.routes import users 
+from flask_blog.posts.routes import posts 
+from flask_blog.main.routes import main
+
+app.register_blueprint(users)
+app.register_blueprint(posts)
+app.register_blueprint(main)
