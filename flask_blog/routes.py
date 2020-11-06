@@ -163,7 +163,7 @@ def user_posts(username):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    sender = 'wilens1@yahoo.com'
+    sender = str(os.environ.get("MAIL_USERNAME")) + '@gmail.com'
     msg = Message(subject='Password Reset Request',
         sender=sender,
         recipients=[user.email])
