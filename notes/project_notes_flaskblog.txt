@@ -483,4 +483,17 @@ User Account Page - Updating database with account changes
       - must import FileField & FileAllowed from flask_wtf.file
         - FileField: this is what allows the user to choose an image file from their file explorer/finder
         - FileAllowed: limits the filetypes (i.e. jpg, png) that can be accepted from user.
-  
+
+Creating Posts
+  - need to create new route & form
+  - route function needs to add the post to the DB
+  - need to also update /home route so that the posts come from DB and are displayed correctly.
+
+Creating route that takes us to a specific page for a specific post
+  - we will do this by using variables within our routes
+  - in this case, we'd want the ID of a post to be part of the route.
+    - see @app.route("/post/<post_id>")
+  - the function then takes whatever is in <> as a parameter.
+  - can make the variables even more specific if we want
+    - since our ID is an integer, we will use:
+      @app.route('/post/<int:post_id>')
