@@ -1,0 +1,18 @@
+We're nearing the end of our project. It's now time to break it up to be more modular.
+
+In this video:
+    - moving config variables into their own file 
+    - move creation of application into it's own function
+        - allows us to create different instances of our application
+        - this is called 'application factory' - allows to have separate test app & production app
+
+Split up our app into different sections
+    - we use blueprints to do this
+
+Creating Blueprint
+    - example: let's make a blueprint for users/authentication functionality
+    - create a directory within application package (flask_blog) called 'users'
+    - also create one for 'posts' and 'main'
+        - main will contain home & about pages
+    - once each of these new folders have '__init__.py' files, they are now packages!
+    - will make a routes.py file for each package
