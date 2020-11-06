@@ -4,3 +4,4 @@ flask_blog/static/profile_pics
 __pycache__/
 notes/sample_accounts.txt
 notes/sample_latin.txt
+flask_blog/site.db
