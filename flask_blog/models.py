@@ -1,6 +1,7 @@
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask_blog import db, login_manager, app
+from flask import current_app
+from flask_blog import db, login_manager
 from flask_login import UserMixin
 
 @login_manager.user_loader
@@ -17,13 +18,13 @@ class User(db.Model, UserMixin):
 
     def get_reset_token(self, expires_sec=1800):
         """Generates a password reset token for the given user """
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     @staticmethod # tells python not to expect the 'self' parameter as an argument
     def verify_reset_token(token):
         """Takes a token as an argument and returns the user with the given ID. """
-        s = Serializer(app.config['SECRET_KEY'])
+        s = Serializer(current_app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
         except:

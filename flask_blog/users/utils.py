@@ -1,9 +1,9 @@
 import os
 import secrets
 from PIL import Image
-from flask import url_for
+from flask import url_for, current_app
 from flask_mail import Message
-from flask_blog import app, mail
+from flask_blog import mail
 
 def save_picture(form_picture):
     """Saves user's new profile picture to our file system"""
@@ -12,7 +12,7 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     # Get the full path of the profile picture with new filename
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+    picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
     # Save resized picture to the picture_path
     resized_image = Image.open(form_picture)
     resized_image.thumbnail((125, 125))
