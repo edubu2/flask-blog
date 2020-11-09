@@ -4,6 +4,10 @@ Big thank you to **Corey Schafer** for his YouTube Flask Tutorial ([link](https:
 
 NOTE: The final application can be accessed [here](45.33.123.193)
 
+## The code is broken up into two main branches: web-server and local-state
+- web-server: Contains the production code running on the Linode VM
+- local-state: Contains development application to test locally
+
 ## Tools Implemented
 - Python3
 - Flask for application framework
