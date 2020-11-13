@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <!-- open a form tag with post, so that it posts the info to the same form we're currently on  -->
+    <form method="POST" action="">
+        <!-- enter form fields: hidden tag, then  -->
+        {{ form.hidden_tag() }}
+        <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
+        <!-- We will add some html/css classes here from bootstrap for asthetics -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend_name }}</legend>
+            <!-- Now we start adding our fields -->
+            <!-- What to do if there are no errors -->
+            <div class="form-group">
+                {{ form.full_text.label(class="form-control-label") }}
+                {% if form.full_text.errors %}
+                {{ form.full_text(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.full_text.errors %}
+                    <span> {{ error }} </span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.full_text(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.summary.label(class="form-control-label") }}
+                {% if form.summary.errors %}
+                {{ form.summary(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.summary.errors %}
+                    <span> {{ error }} </span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ summary.label(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
