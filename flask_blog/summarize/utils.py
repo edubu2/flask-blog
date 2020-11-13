@@ -1,6 +1,3 @@
-import sys
-import pandas as pd
-import numpy as np
 import heapq
 import re
 
@@ -9,43 +6,46 @@ nltk.download('stopwords', quiet=True)
 nltk.download('punkt', quiet=True)
 
 
-def main():
-    file_name = "text_files/" + \
-        str(input("1. Enter text file name (without extension): ")) + ".txt"
-    sent_max_length = 30
-    top_n = 3
+def summarize_text(original_text, sent_max_length=30, top_n=3):
+    """Takes a long text string (such as an article or email) and returns the top n most important sentences as a formatted string. 
 
-    def get_text(text_file):
-        """Takes a .txt file and returns the text, as well as the cleaned text. """
+    Only sentences that have fewer words than sent_max_length can be included in the summary, regardless of content. """
 
-        with open(text_file, 'r', encoding='utf-8', errors='ignore') as f:
-            text = f.read()
+    assert sent_max_length >= 25, "Max sentence length must be greater than or equal to 25"
 
+    def parse_text(original_text):
+        """Cleans up the original text so it can be tokenized. Returns full_text & clean_text. """
+
+        full_text = str(original_text)
         # replace reference number (i.e. [n]) with empty space, if any..
-        text = re.sub(r'\[[0-9]*\]', ' ', text)
+        full_text = re.sub(r'\[[0-9]*\]', ' ', full_text)
         # replace one or more spaces with one space
-        text = re.sub(r'\s+', ' ', text)
+        full_text = re.sub(r'\s+', ' ', full_text)
         # convert all uppercase characters into lowercase characters
-        clean_text = text.lower()
+        clean_text = full_text.lower()
         # replace character other than [a-zA-Z0-9]
         clean_text = re.sub(r'\W', ' ', clean_text)
         # replace digit with empty
         clean_text = re.sub(r'\d', ' ', clean_text)
+        # replace one or more spaces with one space (again)
+        text = re.sub(r'\s+', ' ', full_text)
 
-        return text, clean_text
+        return full_text, clean_text
 
-    def rank_sentence(text, clean_text):
-        """Splits text string into sentences, then ranks them. """
+    def rank_sentence(full_text, clean_text):
+        """Splits text string into sentences, then ranks them. Returns two dictionaries: sentence_score and word_count. """
 
-        sentences = nltk.sent_tokenize(text)
+        sentences = nltk.sent_tokenize(full_text)
         stop_words = nltk.corpus.stopwords.words('english')
 
+        # create dict with the count of each word in the text (excluding stop words). The most frequently used words will be considered the most important
         word_count = {}
         words = nltk.word_tokenize(clean_text)
         for word in words:
             if word not in stop_words:
                 word_count[word] = word_count.get(word, 0) + 1
 
+        # rank sentences based on the freq. of the words inside them
         sentence_score = {}
 
         for sentence in sentences:
@@ -62,13 +62,15 @@ def main():
 
         return sentence_score, word_count
 
-    def generate_summary(file_name, sent_max_length, top_n):
-        text, clean_text = get_text(file_name)
-        sentence_score, _ = rank_sentence(text, clean_text)
+    def generate_summary(original_text, sent_max_length, top_n):
+        """Generates the top three sentences in a string using the wrapped functions above. """
+
+        full_text, clean_text = parse_text(original_text)
+        sentence_score, _ = rank_sentence(full_text, clean_text)
         best_sentences = heapq.nlargest(
             top_n, sentence_score, key=sentence_score.get)
         summarized_text = []
-        sentences = nltk.sent_tokenize(text)
+        sentences = nltk.sent_tokenize(full_text)
 
         for sentence in best_sentences:
             summarized_text.append(sentence)
@@ -77,11 +79,7 @@ def main():
 
         return summarized_text
 
-    # Back to Main
+    # Back to Main function (summarize_text)
     # Generate Summary
-    summary = generate_summary(file_name, sent_max_length, top_n)
-    print("------------------ \nSUMMARY START\n", summary)
-
-
-if __name__ == '__main__':
-    main()
+    summary = generate_summary(original_text, sent_max_length, top_n)
+    return summary
