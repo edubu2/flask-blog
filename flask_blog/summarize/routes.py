@@ -15,6 +15,6 @@ def magic_summarize():
         full_text = form.full_text.data
         summary = summarize_text(full_text)
         form.summary.data = summary
-        return render_template('summarize.html', form=form, title='Summarize Text', summary=summary)
+        return render_template('summarize.html', form=form, title='Summarize Text', summary=summary, legend_name="Summarize Text")
 
-    return render_template('summarize.html', form=form, title='Summarize Text')
+    return render_template('summarize.html', form=form, title='Summarize Text', legend_name="Summarize Text")
