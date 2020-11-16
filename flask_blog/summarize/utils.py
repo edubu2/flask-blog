@@ -75,7 +75,7 @@ def summarize_text(original_text, sent_max_length=30, top_n=3):
         for sentence in best_sentences:
             summarized_text.append(sentence)
 
-        summarized_text = "\n".join(summarized_text)
+        summarized_text = "\n\n".join(summarized_text)
 
         return summarized_text
 
