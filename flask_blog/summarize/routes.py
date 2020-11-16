@@ -10,9 +10,11 @@ def magic_summarize():
     """ This route allows users to get a summarized version of any long text (such as an article or email). """
 
     form = SummarizeForm()
+
     if form.validate_on_submit():
         full_text = form.full_text.data
         summary = summarize_text(full_text)
         form.summary.data = summary
+        return render_template('summarize.html', form=form, title='Summarize Text', summary=summary)
 
-    return render_template('summarize.html', form=form, title='Summarize Text', summary=summary)
+    return render_template('summarize.html', form=form, title='Summarize Text')
