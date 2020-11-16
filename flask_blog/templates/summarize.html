@@ -30,6 +30,7 @@
                 {{ form.full_text(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+            {% if form.full_text.data %}
             <div class="form-group">
                 {{ form.summary.label(class="form-control-label") }}
                 {% if form.summary.errors %}
@@ -43,6 +44,8 @@
                 {{ form.summary(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+            {% endif %}
+
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
