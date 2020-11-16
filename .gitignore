@@ -6,3 +6,8 @@ notes/sample_accounts.txt
 notes/sample_latin.txt
 flask_blog/site.db
 .vscode/
+<<<<<<< HEAD
+=======
+flask_blog/summarize/test_text.py
+notes/web_serving.txt
+>>>>>>> text-summarizer

@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <!-- open a form tag with post, so that it posts the info to the same form we're currently on  -->
+    <form method="POST" action="">
+        <!-- enter form fields: hidden tag, then  -->
+        {{ form.hidden_tag() }}
+        <!-- adds a token that interfaces w/ secret key to protect the website, don't worry about the rest but we do need this -->
+        <!-- We will add some html/css classes here from bootstrap for asthetics -->
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend_name }}</legend>
+            <p>
+                Bogged down with emails? Want to get the jist of a long article? Simply copy some text and paste it
+                below, then click
+                "Summarize". In return, you'll get the three most important sentences. Hopefully this saves you some
+                time. Enjoy!
+            </p>
+            <!-- Now we start adding our fields -->
+            <!-- What to do if there are no errors -->
+            <div class="form-group">
+                {{ form.full_text.label(class="form-control-label") }}
+                {% if form.full_text.errors %}
+                {{ form.full_text(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.full_text.errors %}
+                    <span> {{ error }} </span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.full_text(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            {% if form.full_text.data %}
+            <div class="form-group">
+                {{ form.summary.label(class="form-control-label") }}
+                {% if form.summary.errors %}
+                {{ form.summary(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.summary.errors %}
+                    <span> {{ error }} </span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.summary(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}
