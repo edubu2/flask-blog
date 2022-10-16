@@ -1,5 +1,7 @@
 # Elliot's Website
 
+**Note as of Aug 2022, the website is no longer live but can be easily reproduced using the below steps.**
+
 Big thank you to **Corey Schafer** for his YouTube Flask Tutorial ([link](https://www.youtube.com/watch?v=MwZwr5Tvyxo&list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH&ab_channel=CoreySchafer)), which helped me get started with this web app.
 
 My website now contains a [text summarizer](https://www.ewilens.com/summarize-text) that uses NLP (Natural Language Processing) to rank sentences from a piece of long text. The top 3 sentences are returned. Users can use this application to quickly understand long articles or emails without having to read the whole thing! For more information about how this works, checkout my [NLP-Summarize repository](https://github.com/edubu2/NLP-Summarize).
